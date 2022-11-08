@@ -1,0 +1,34 @@
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+build eggs
+bin
+var
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+coverage.xml
+
+# Virtual environments
+env/
+dev.db
+.cac/v/cache
+
+# pytest cache
+.pytest_cache/**
+
+# pip install direction
+.modules/
+
+# db migrations
+migrations/
