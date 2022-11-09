@@ -1,0 +1,86 @@
+name: Onlince CV Pipeline
+
+on:
+  push:
+    branches:
+      [ 'master' ]
+
+jobs:
+  Build:
+    environment:
+      name: Build
+    runs-on:
+      [ ubuntu-latest ]
+    strategy:
+      matrix:
+        python-version:
+          [ "3.8", "3.9", "3.10" ]
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version:
+            ${{ matrix.python-version }}
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements/dev.txt;
+      - name: 'Run Tests'
+        run: |
+          pytest --cov-report=xml --cov=. tests/
+      - name: Upload Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: coverage.xml
+
+  Alpha:
+    name: Deploy to Alpha Stage
+    needs:
+      [ Build ]
+    runs-on:
+      [ ubuntu-latest ]
+    environment:
+      name: Alpha
+    steps:
+      - name: blah
+        run: echo 'blah'
+
+  Beta:
+    name: Deploy to Beta Stage
+    needs:
+      [ Alpha ]
+    runs-on:
+      [ ubuntu-latest ]
+    environment:
+      name: Beta
+    steps:
+      - name: blah
+        run: echo 'blah'
+
+  Gamma:
+    name: Deploy to Gamma Stage
+    needs:
+      [ Beta ]
+    runs-on:
+      [ ubuntu-latest ]
+    environment:
+      name: Gamma
+    steps:
+      - name: blah
+        run: echo 'blah'
+
+  Prod:
+    name: Deploy to Prod Stage
+    needs:
+      [ Gamma ]
+    runs-on:
+      [ ubuntu-latest ]
+    environment:
+      name: Prod
+    steps:
+      - name: blah
+        run: echo 'blah'

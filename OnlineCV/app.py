@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask
-from OnlineCV.extensions import bcrypt, cache, db, migrate, cors
+from OnlineCV.extensions import bcrypt, cache, db, migrate, jwt, cors
 
 from OnlineCV import commands, user
 from OnlineCV.user.views import user_blueprint
@@ -31,6 +31,7 @@ def register_extensions(app):
     cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
+    jwt.init_app(app)
 
 def register_blueprints(app):
     """Register Flask blueprints."""

@@ -9,6 +9,7 @@
 build eggs
 bin
 var
+build/
 
 # Installer logs
 pip-log.txt
@@ -26,6 +27,9 @@ dev.db
 
 # pytest cache
 .pytest_cache/**
+.pytest_cache/
+.pytest_cache/*
+*/__pycache__/
 
 # pip install direction
 .modules/

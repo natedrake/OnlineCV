@@ -12,7 +12,8 @@ class UserSchema(Schema):
     createdAt = fields.DateTime(attribute='created_at', dump_only=True)
     updatedAt = fields.DateTime(attribute='updated_at')
     # ugly hack.
-    user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
+    # user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
+    user = fields.Nested(lambda: UserSchema(exclude=('user',), default=True, load_only=True))
 
     @pre_load
     def make_user(self, data, **kwargs):

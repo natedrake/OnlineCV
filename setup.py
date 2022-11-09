@@ -11,7 +11,9 @@ setup(
     license='MIT',
     packages=['OnlineCV'],
     install_requires=[
-        'flask'
+        'flask',
+        'flask_sqlalchemy',
+        'flask_bcrypt'
     ],
     zip_safe=False
 )
