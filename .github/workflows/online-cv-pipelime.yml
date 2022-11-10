@@ -1,4 +1,4 @@
-name: Onlince CV Pipeline
+name: Online CV Pipeline
 
 on:
   push:
