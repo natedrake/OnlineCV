@@ -17,4 +17,5 @@ Flask-Migrate
 gunicorn
 Flask-Cors
 factory-boy
+boto3
 waitress

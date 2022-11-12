@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 """Application configuration."""
 import os
+import boto3
+import json
 from datetime import timedelta
+from botocore.exceptions import ClientError
 
 class Config(object):
     """Base configuration."""
@@ -28,27 +31,54 @@ class Config(object):
     BCRYPT_LOG_ROUNDS = 13
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
+    def get_db_config_obj(stage):
+        secret_name = f'OnlineCV/{stage}/RDS_POSTGRES_PASSWORD'
+        region_name = 'eu-west-1'
+        # Create a Secrets Manager client
+        session = boto3.session.Session()
+        client = session.client(
+            service_name='secretsmanager',
+            region_name=region_name
+        )
+
+        try:
+            get_secret_value_response = client.get_secret_value(
+                SecretId=secret_name
+            )
+        except ClientError as e:
+            raise e
+
+        return json.loads(get_secret_value_response['SecretString'])
+
 class ProdConfig(Config):
     """Production configuration."""
-    ENV = 'prod'
+    ENV = 'production'
     DEBUG = False
-    DB_NAME = 'OnlineCV'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', f'postgresql://localhost/{DB_NAME}')
+    DB_CONFIG_OBJ = Config.get_db_config_obj(ENV)
+    DB_HOSTNAME = DB_CONFIG_OBJ['host']
+    DB_PORT = DB_CONFIG_OBJ['port']
+    DB_USERNAME = DB_CONFIG_OBJ['username']
+    DB_PASSWORD =  DB_CONFIG_OBJ['password']
+    DB_INSTANCE_ID = DB_CONFIG_OBJ['dbInstanceIdentifier']
+    SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_INSTANCE_ID}'
 
 class DevConfig(Config):
     """Development configuration."""
-    ENV = 'dev'
+    ENV = 'development'
     DEBUG = True
-    DB_NAME = 'dev.db'
-    # Put the db file in project root
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', f'postgresql://localhost/{DB_NAME}-dev')
+    DB_CONFIG_OBJ = Config.get_db_config_obj(ENV)
+    DB_HOSTNAME = DB_CONFIG_OBJ['host']
+    DB_PORT = DB_CONFIG_OBJ['port']
+    DB_USERNAME = DB_CONFIG_OBJ['username']
+    DB_PASSWORD = DB_CONFIG_OBJ['password']
+    DB_INSTANCE_ID = DB_CONFIG_OBJ['dbInstanceIdentifier']
+    SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_INSTANCE_ID}'
 
 class TestConfig(Config):
     """Test configuration."""
     TESTING = True
     DEBUG = True
-    DB_NAME = 'test.db'
+    DB_NAME = '../test.db'
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_NAME}'
     # For faster tests; needs at least 4 to avoid "ValueError: Invalid rounds"
     BCRYPT_LOG_ROUNDS = 4
