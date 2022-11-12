@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Database module, including the SQLAlchemy database object and DB-related utilities."""
 from sqlalchemy.orm import relationship
-from .extensions import db
+from .extensions import db, cache
 
 from .compat import basestring
 
@@ -22,6 +22,7 @@ class SurrogatePK(object):
     id = db.Column(db.Integer, primary_key=True)
 
     @classmethod
+    @cache.memoize(50)
     def get_by_id(cls, record_id):
         """Get record by ID."""
         if any(

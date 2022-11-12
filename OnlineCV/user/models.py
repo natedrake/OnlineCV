@@ -3,7 +3,7 @@
 import datetime as dt
 
 from OnlineCV.database import Column, Model, SurrogatePK, db
-from OnlineCV.extensions import bcrypt
+from OnlineCV.extensions import bcrypt, cache
 
 class User(SurrogatePK, Model):
     __tablename__ = 'users'
@@ -32,6 +32,7 @@ class User(SurrogatePK, Model):
         """Check password."""
         return bcrypt.check_password_hash(self.password, value)
 
+    @cache.memoize(timeout=50)
     def __repr__(self):
         """Represent instance as a unique string."""
         return '<User({username!r})>'.format(username=self.username)
