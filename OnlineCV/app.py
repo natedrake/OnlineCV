@@ -16,7 +16,7 @@ def create_app(config_object=ProdConfig):
     """
     app = Flask(__name__.split('.')[0])
     app.url_map.strict_slashes = False
-    app._static_folder='../assets'
+    app._static_folder = '../assets'
     app.config.from_object(config_object)
     register_extensions(app)
     register_blueprints(app)
@@ -28,7 +28,9 @@ def create_app(config_object=ProdConfig):
 def register_extensions(app):
     """Register Flask extensions."""
     bcrypt.init_app(app)
-    cache.init_app(app)
+    cache.init_app(app, config={
+        'CACHE_TYPE': ProdConfig.CACHE_TYPE
+    })
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
