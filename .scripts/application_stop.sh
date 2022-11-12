@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-sudo killall python3
+kill $(pgrep -f flask)
