@@ -2,7 +2,7 @@
 
 cd /home/ubuntu/OnlineCV
 
-python3 -m pip install requirements.txt
+python3 -m pip install -r requirements.txt
 
 # /home/ubuntu/.local/bin/flask db init
 # /home/ubuntu/.local/bin/flask db migrate
