@@ -1,4 +1,2 @@
 #!/usr/bin/env bash
-
-cd /home/ubuntu/OnlineCV
-nohup waitress-serve --listen=0.0.0.0:80 --threads=8 --call 'autoapp:create_app' 1>/dev/null &
+/tmp/waitress-serve.sh > /dev/null 2> /dev/null < /dev/null &

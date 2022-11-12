@@ -2,6 +2,8 @@ version: 0.0
 os: linux
 
 files:
+  - source: ./waitress-serve.sh
+    destination: /tmp
   - source: /
     destination: /home/ubuntu/OnlineCV
 
