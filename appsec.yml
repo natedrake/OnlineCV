@@ -10,10 +10,10 @@ hooks:
     - location: .scripts/application_stop.sh
       timeout: 15
       runas: root
-  # BeforeInstall:
-  #   - location: .scripts/before_install.sh
-  #     timeout: 15
-  #     runas : root
+  BeforeInstall:
+    - location: .scripts/before_install.sh
+      timeout: 15
+      runas : root
   # AfterInstall:
   #   - location: .scripts/after_install.sh
   #     timeout: 600
