@@ -26,5 +26,5 @@ hooks:
       runas: root
   ValidateService:
     - location: scripts/validate_service.sh
-      timeout: 15
+      timeout: 30
       runas: root
