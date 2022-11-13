@@ -8,7 +8,6 @@ from botocore.exceptions import ClientError
 
 class Config(object):
     """Base configuration."""
-    SECRET_KEY = os.environ.get('FLASK_SECRET', 'secret-key')  # TODO: Change me
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     # "MemcachedCache", "RedisCache", etc.
@@ -31,9 +30,7 @@ class Config(object):
     BCRYPT_LOG_ROUNDS = 13
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
-    def get_db_config_obj(stage):
-        secret_name = f'OnlineCV/{stage}/RDS_POSTGRES_PASSWORD'
-        region_name = 'eu-west-1'
+    def get_secret(secret_name, region_name='eu-west-1'):
         # Create a Secrets Manager client
         session = boto3.session.Session()
         client = session.client(
@@ -48,13 +45,14 @@ class Config(object):
         except ClientError as e:
             raise e
 
-        return json.loads(get_secret_value_response['SecretString'])
+        return get_secret_value_response['SecretString']
 
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'production'
     DEBUG = False
-    DB_CONFIG_OBJ = Config.get_db_config_obj(ENV)
+    SECRET_KEY = Config.get_secret('OnlineCV/FLASK_SECRET')
+    DB_CONFIG_OBJ = Config.get_secret(f'OnlineCV/{ENV}/RDS_POSTGRES_PASSWORD')
     DB_HOSTNAME = DB_CONFIG_OBJ['host']
     DB_PORT = DB_CONFIG_OBJ['port']
     DB_USERNAME = DB_CONFIG_OBJ['username']
@@ -66,7 +64,8 @@ class DevConfig(Config):
     """Development configuration."""
     ENV = 'development'
     DEBUG = True
-    DB_CONFIG_OBJ = Config.get_db_config_obj(ENV)
+    SECRET_KEY = Config.get_secret('OnlineCV/FLASK_SECRET')
+    DB_CONFIG_OBJ = Config.get_secret(f'OnlineCV/{ENV}/RDS_POSTGRES_PASSWORD')
     DB_HOSTNAME = DB_CONFIG_OBJ['host']
     DB_PORT = DB_CONFIG_OBJ['port']
     DB_USERNAME = DB_CONFIG_OBJ['username']

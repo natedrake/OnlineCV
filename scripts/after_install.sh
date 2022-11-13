@@ -4,6 +4,6 @@ cd /home/ubuntu/OnlineCV
 
 python3 -m pip install -r requirements.txt
 
-# /home/ubuntu/.local/bin/flask db init
-# /home/ubuntu/.local/bin/flask db migrate
-# /home/ubuntu/.local/bin/flask db upgrade
+# set up flask ENV variables
+export FLASK_APP=autoapp.py
+export FLASK_DEBUG=0
