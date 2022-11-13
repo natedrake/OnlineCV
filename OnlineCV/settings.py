@@ -45,7 +45,7 @@ class Config(object):
         except ClientError as e:
             raise e
 
-        return get_secret_value_response['SecretString']
+        return json.loads(get_secret_value_response['SecretString'])
 
 class ProdConfig(Config):
     """Production configuration."""
