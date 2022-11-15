@@ -5,6 +5,7 @@ from OnlineCV.extensions import bcrypt, cache, db, migrate, jwt, cors
 
 from OnlineCV import commands, user
 from OnlineCV.user.views import user_blueprint
+from OnlineCV.visitor.views import visitor_blueprint
 from OnlineCV.templates.general.views import general_blueprint
 from OnlineCV.settings import ProdConfig
 from OnlineCV.exceptions import InvalidUsage
@@ -18,18 +19,18 @@ def create_app(config_object=ProdConfig):
     app.url_map.strict_slashes = False
     app._static_folder = '../assets'
     app.config.from_object(config_object)
-    register_extensions(app)
+    register_extensions(app, config_object)
     register_blueprints(app)
     register_errorhandlers(app)
     register_shellcontext(app)
     register_commands(app)
     return app
 
-def register_extensions(app):
+def register_extensions(app, config_object):
     """Register Flask extensions."""
     bcrypt.init_app(app)
     cache.init_app(app, config={
-        'CACHE_TYPE': ProdConfig.CACHE_TYPE
+        'CACHE_TYPE': config_object.CACHE_TYPE
     })
     db.init_app(app)
     migrate.init_app(app, db)
@@ -40,6 +41,7 @@ def register_blueprints(app):
     origins = app.config.get('CORS_ORIGIN_WHITELIST', '*')
     cors.init_app(user_blueprint, origins=origins)
     app.register_blueprint(user_blueprint)
+    app.register_blueprint(visitor_blueprint)
     app.register_blueprint(general_blueprint)
 
 def register_errorhandlers(app):

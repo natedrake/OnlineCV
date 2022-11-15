@@ -52,6 +52,16 @@ class ProdConfig(Config):
     ENV = 'production'
     DEBUG = False
     SECRET_KEY = Config.get_secret('OnlineCV/FLASK_SECRET')
+    # flask-caching
+    CACHE_TYPE = 'MemcachedCache'
+    CACHE_DEFAULT_TIMEOUT = 300
+    CACHE_MEMCACHED_SERVERS = (
+        'onlinecvmemcached.0ne2f9.0001.euw1.cache.amazonaws.com:11211',
+        'onlinecvmemcached.0ne2f9.0002.euw1.cache.amazonaws.com:11211',
+        'onlinecvmemcached.0ne2f9.0003.euw1.cache.amazonaws.com:11211'
+    )
+    CACHE_OPTIONS = {}
+    # SQLAlchemy
     DB_CONFIG_OBJ = Config.get_secret(f'OnlineCV/{ENV}/RDS_POSTGRES_PASSWORD')
     DB_HOSTNAME = DB_CONFIG_OBJ['host']
     DB_PORT = DB_CONFIG_OBJ['port']
@@ -65,6 +75,13 @@ class DevConfig(Config):
     ENV = 'development'
     DEBUG = True
     SECRET_KEY = Config.get_secret('OnlineCV/FLASK_SECRET')
+    # flask-caching
+    CACHE_TYPE = 'MemcachedCache'
+    CACHE_DEFAULT_TIMEOUT = 300
+    CACHE_MEMCACHED_SERVERS = (
+        'onlinecvmemcached-gamma.0ne2f9.0001.euw1.cache.amazonaws.com:11211',
+        'onlinecvmemcached-gamma.0ne2f9.0002.euw1.cache.amazonaws.com:11211'
+    )
     DB_CONFIG_OBJ = Config.get_secret(f'OnlineCV/{ENV}/RDS_POSTGRES_PASSWORD')
     DB_HOSTNAME = DB_CONFIG_OBJ['host']
     DB_PORT = DB_CONFIG_OBJ['port']

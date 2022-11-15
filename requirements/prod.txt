@@ -18,4 +18,5 @@ gunicorn
 Flask-Cors
 factory-boy
 boto3
+pylibmc
 waitress

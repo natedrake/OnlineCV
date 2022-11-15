@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """User views."""
-from flask import Blueprint, request
+from flask import Blueprint, request, render_template
 from flask_apispec import use_kwargs, marshal_with
 from flask_jwt_extended import (
     jwt_required, jwt_optional, create_access_token, current_user
