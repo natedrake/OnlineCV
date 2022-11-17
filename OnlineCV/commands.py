@@ -3,7 +3,6 @@
 import os
 from glob import glob
 from subprocess import call
-
 import click
 from flask import current_app
 from flask.cli import with_appcontext
@@ -13,6 +12,7 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT = os.path.join(HERE, os.pardir)
 TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
 
+
 @click.command()
 def test():
     """Run the tests."""
@@ -20,9 +20,9 @@ def test():
     rv = pytest.main([TEST_PATH, '--verbose'])
     exit(rv)
 
+
 @click.command()
-@click.option('-f', '--fix-imports', default=False, is_flag=True,
-              help='Fix imports using isort, before linting')
+@click.option('-f', '--fix-imports', default=False, is_flag=True, help='Fix imports using isort, before linting')
 def lint(fix_imports):
     """Lint and check code style with flake8 and isort."""
     skip = ['requirements']
@@ -44,6 +44,7 @@ def lint(fix_imports):
         execute_tool('Fixing import order', 'isort', '-rc')
     execute_tool('Checking code style', 'flake8')
 
+
 @click.command()
 def clean():
     """Remove *.pyc and *.pyo files recursively starting at current directory.
@@ -56,14 +57,13 @@ def clean():
                 click.echo('Removing {}'.format(full_pathname))
                 os.remove(full_pathname)
 
+
 @click.command()
-@click.option('--url', default=None,
-              help='Url to test (ex. /static/image.png)')
-@click.option('--order', default='rule',
-              help='Property on Rule to order by (default: rule)')
+@click.option('--url', default=None, help='Url to test (ex. /static/image.png)')
+@click.option('--order', default='rule', help='Property on Rule to order by (default: rule)')
 @with_appcontext
 def urls(url, order):
-    """Display all of the url matching routes for the project.
+    """Display all the url matching routes for the project.
     Borrowed from Flask-Script, converted to use Click.
     """
     rows = []

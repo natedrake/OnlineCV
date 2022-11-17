@@ -8,6 +8,7 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy, Model
 
+
 class CRUDMixin(Model):
     """Mixin that adds convenience methods for CRUD (create, read, update, delete) operations."""
 
@@ -34,6 +35,7 @@ class CRUDMixin(Model):
         """Remove the record from the database."""
         db.session.delete(self)
         return commit and db.session.commit()
+
 
 bcrypt = Bcrypt()
 db = SQLAlchemy(model_class=CRUDMixin)

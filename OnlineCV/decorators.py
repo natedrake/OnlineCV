@@ -4,6 +4,7 @@ from flask import (
     request, render_template
 )
 
+
 def templated(template=None):
     def decorator(f):
         @wraps(f)

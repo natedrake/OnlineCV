@@ -11,6 +11,7 @@ from OnlineCV.templates.general.views import general_blueprint
 from OnlineCV.settings import ProdConfig
 from OnlineCV.exceptions import InvalidUsage
 
+
 def create_app(config_object=ProdConfig):
     """An application factory, as explained here:
     http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -20,20 +21,22 @@ def create_app(config_object=ProdConfig):
     app.url_map.strict_slashes = False
     app._static_folder = '../assets'
     app.config.from_object(config_object)
-    register_extensions(app, config_object)
+    register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
     register_shellcontext(app)
     register_commands(app)
     return app
 
-def register_extensions(app, config_object):
+
+def register_extensions(app):
     """Register Flask extensions."""
     bcrypt.init_app(app)
     cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+
 
 def register_blueprints(app):
     """Register Flask blueprints."""
@@ -43,12 +46,14 @@ def register_blueprints(app):
     app.register_blueprint(visitor_blueprint)
     app.register_blueprint(general_blueprint)
 
+
 def register_errorhandlers(app):
     def errorhandler(error):
         response = error.to_json()
         response.status_code = error.status_code
         return response
     app.errorhandler(InvalidUsage)(errorhandler)
+
 
 def register_shellcontext(app):
     """Register shell context objects."""

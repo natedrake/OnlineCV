@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='OnlineCV',
-    version=0.1,
+    version='1.0',
     description='',
     url='https://github.com/natedrake/OnlineCV',
     author='John O\'Grady <natedrake>',

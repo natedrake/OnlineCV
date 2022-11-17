@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /home/ubuntu/OnlineCV
+cd /home/ubuntu/OnlineCV || exit
 
 python3 -m pip install -r requirements.txt
 

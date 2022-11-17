@@ -7,6 +7,7 @@ import secrets
 from datetime import timedelta
 from botocore.exceptions import ClientError
 
+
 class Config(object):
     """Base configuration."""
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
@@ -31,6 +32,7 @@ class Config(object):
     BCRYPT_LOG_ROUNDS = 13
     DEBUG_TB_INTERCEPT_REDIRECTS = False
 
+    @staticmethod
     def get_secret(secret_name, region_name='eu-west-1'):
         # Create a Secrets Manager client
         session = boto3.session.Session()
@@ -48,6 +50,7 @@ class Config(object):
 
         return json.loads(get_secret_value_response['SecretString'])
 
+
 class ProdConfig(Config):
     """Production configuration."""
     ENV = 'production'
@@ -63,13 +66,14 @@ class ProdConfig(Config):
     )
     CACHE_OPTIONS = {}
     # SQLAlchemy
-    DB_CONFIG_OBJ = Config.get_secret(f'OnlineCV/{ENV}/RDS_POSTGRES_PASSWORD')
+    DB_CONFIG_OBJ = Config.get_secret('OnlineCV/production/RDS_POSTGRES_PASSWORD')
     DB_HOSTNAME = DB_CONFIG_OBJ['host']
     DB_PORT = DB_CONFIG_OBJ['port']
     DB_USERNAME = DB_CONFIG_OBJ['username']
-    DB_PASSWORD =  DB_CONFIG_OBJ['password']
+    DB_PASSWORD = DB_CONFIG_OBJ['password']
     DB_INSTANCE_ID = DB_CONFIG_OBJ['dbInstanceIdentifier']
     SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_INSTANCE_ID}'
+
 
 class DevConfig(Config):
     """Development configuration."""
@@ -83,13 +87,14 @@ class DevConfig(Config):
         'onlinecvmemcached-gamma.0ne2f9.0001.euw1.cache.amazonaws.com:11211',
         'onlinecvmemcached-gamma.0ne2f9.0002.euw1.cache.amazonaws.com:11211'
     )
-    DB_CONFIG_OBJ = Config.get_secret(f'OnlineCV/{ENV}/RDS_POSTGRES_PASSWORD')
+    DB_CONFIG_OBJ = Config.get_secret('OnlineCV/development/RDS_POSTGRES_PASSWORD')
     DB_HOSTNAME = DB_CONFIG_OBJ['host']
     DB_PORT = DB_CONFIG_OBJ['port']
     DB_USERNAME = DB_CONFIG_OBJ['username']
     DB_PASSWORD = DB_CONFIG_OBJ['password']
     DB_INSTANCE_ID = DB_CONFIG_OBJ['dbInstanceIdentifier']
     SQLALCHEMY_DATABASE_URI = f'postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOSTNAME}:{DB_PORT}/{DB_INSTANCE_ID}'
+
 
 class TestConfig(Config):
     """Test configuration."""

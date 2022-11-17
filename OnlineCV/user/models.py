@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """User models."""
 import datetime as dt
-from OnlineCV.database import Column, Model, SurrogatePK, db
-from OnlineCV.extensions import bcrypt, cache
+from OnlineCV.database import (
+    Column, Model, SurrogatePK, db
+)
+from OnlineCV.extensions import bcrypt
+
 
 class User(SurrogatePK, Model):
     __tablename__ = 'users'

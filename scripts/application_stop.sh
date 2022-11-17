@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-kill $(pgrep -f python)
+kill "$(pgrep -f python)"

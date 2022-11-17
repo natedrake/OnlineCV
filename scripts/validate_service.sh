@@ -3,6 +3,7 @@
 echo "Waiting for 15 seconds before checking health.."
 sleep 15
 
+# shellcheck disable=SC1083
 status_code=$(curl --write-out %{http_code} --silent --output /dev/null http://localhost:80/health)
 if [[ "${status_code}" -ne 200 ]]; then
   echo "Application is not healthy - ${status_code}"

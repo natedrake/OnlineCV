@@ -21,9 +21,12 @@ nosetests.xml
 coverage.xml
 
 # Virtual environments
+venv/
 env/
 dev.db
 .cac/v/cache
+
+.idea
 
 # pytest cache
 .pytest_cache/**

@@ -5,6 +5,7 @@ import datetime as dt
 from OnlineCV.database import Column, Model, SurrogatePK, db
 from OnlineCV.extensions import cache
 
+
 class Visitor(SurrogatePK, Model):
     __tablename__ = 'visitors'
     ip_address = Column(db.String(80), unique=False, nullable=False)
@@ -19,4 +20,4 @@ class Visitor(SurrogatePK, Model):
     @cache.memoize(timeout=50)
     def __repr__(self):
         """Represent instance as a unique string."""
-        return '<Visitor({ip_address!r})>'.format(ip_address=self.ip_address)
+        return f'<Visitor(ip_address={self.ip_address}, user_agent={self.user_agent})>'

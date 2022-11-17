@@ -1,6 +1,9 @@
 # coding: utf-8
 
-from marshmallow import Schema, fields, pre_load, post_dump
+from marshmallow import (
+    Schema, fields, pre_load, post_dump
+)
+
 
 class UserSchema(Schema):
     username = fields.Str()
@@ -13,13 +16,12 @@ class UserSchema(Schema):
     updated_at = fields.DateTime(attribute='updated_at')
     # ugly hack.
     # user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
-    user = fields.Nested(lambda: UserSchema(exclude=('user',), default=True, load_only=True))
+    # user = fields.Nested(lambda data: UserSchema(exclude=('user',), default=True, load_only=True))
 
     @pre_load
     def make_user(self, data, **kwargs):
         data = data['user']
-        # some of the frontends send this like an empty string and some send
-        # null
+        # some frontends send this like an empty string and some send null
         if not data.get('email', True):
             del data['email']
         if not data.get('image', True):
@@ -32,6 +34,7 @@ class UserSchema(Schema):
 
     class Meta:
         strict = True
+
 
 user_schema = UserSchema()
 user_schemas = UserSchema(many=True)
