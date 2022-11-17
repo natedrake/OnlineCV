@@ -3,6 +3,7 @@
 import os
 import boto3
 import json
+import secrets
 from datetime import timedelta
 from botocore.exceptions import ClientError
 
@@ -92,8 +93,10 @@ class DevConfig(Config):
 
 class TestConfig(Config):
     """Test configuration."""
+    ENV = 'testing'
     TESTING = True
     DEBUG = True
+    SECRET_KEY = os.environ.get('FLASK_SECRET') if os.environ.get('FLASK_SECRET') else secrets.token_hex(16)
     DB_NAME = '../test.db'
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{DB_NAME}'
     # For faster tests; needs at least 4 to avoid "ValueError: Invalid rounds"
