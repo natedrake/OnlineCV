@@ -1,64 +1,17 @@
 # -*- coding: utf-8 -*-
 """User views."""
-from flask import Blueprint, request, render_template
-from flask_apispec import use_kwargs, marshal_with
-from flask_jwt_extended import (
-    jwt_required, jwt_optional, create_access_token, current_user
+import click
+from flask import (
+    Blueprint, request, flash, redirect, url_for
 )
-from sqlalchemy.exc import IntegrityError
-from OnlineCV.database import db
-from OnlineCV.exceptions import InvalidUsage
-from .models import User
-from .serializers import user_schema
+from flask_apispec import (
+    use_kwargs, marshal_with
+)
+from flask_login import (
+    LoginManager, login_user, login_required, logout_user, current_user as fl_current_user
+)
+from OnlineCV.user.models import User
+from OnlineCV.user.serializers import user_schema
+from OnlineCV.decorators import templated
 
-user_blueprint = Blueprint('user', __name__, template_folder='../templates/user/')
-
-@user_blueprint.route('/api/users', methods=('POST',))
-@use_kwargs(user_schema)
-@marshal_with(user_schema)
-def register_user(username, password, email, **kwargs):
-    try:
-        user = User(username, email, password=password, **kwargs).save()
-        user.token = create_access_token(identity=user)
-    except IntegrityError:
-        db.session.rollback()
-        raise InvalidUsage.user_already_registered()
-    return user
-
-@user_blueprint.route('/api/users/login', methods=('POST',))
-@jwt_optional
-@use_kwargs(user_schema)
-@marshal_with(user_schema)
-def login_user(email, password, **kwargs):
-    user = User.query.filter_by(email=email).first()
-    if user is not None and user.check_password(password):
-        user.token = create_access_token(identity=user, fresh=True)
-        return user
-    else:
-        raise InvalidUsage.user_not_found()
-
-
-@user_blueprint.route('/api/user', methods=('GET',))
-@jwt_required
-@marshal_with(user_schema)
-def get_user():
-    user = current_user
-    # Not sure about this
-    user.token = request.headers.environ['HTTP_AUTHORIZATION'].split('Token ')[1]
-    return current_user
-
-
-@user_blueprint.route('/api/user', methods=('PUT',))
-@jwt_required
-@use_kwargs(user_schema)
-@marshal_with(user_schema)
-def update_user(**kwargs):
-    user = current_user
-    # take in consideration the password
-    password = kwargs.pop('password', None)
-    if password:
-        user.set_password(password)
-    if 'updated_at' in kwargs:
-        kwargs['updated_at'] = user.created_at.replace(tzinfo=None)
-    user.update(**kwargs)
-    return user
+user_blueprint = Blueprint('user', __name__, cli_group='user', template_folder='../templates/user/')

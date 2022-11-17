@@ -9,8 +9,8 @@ class UserSchema(Schema):
     bio = fields.Str()
     image = fields.Url()
     token = fields.Str(dump_only=True)
-    createdAt = fields.DateTime(attribute='created_at', dump_only=True)
-    updatedAt = fields.DateTime(attribute='updated_at')
+    created_at = fields.DateTime(attribute='created_at', dump_only=True)
+    updated_at = fields.DateTime(attribute='updated_at')
     # ugly hack.
     # user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
     user = fields.Nested(lambda: UserSchema(exclude=('user',), default=True, load_only=True))
