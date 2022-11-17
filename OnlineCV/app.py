@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask
-from OnlineCV.extensions import bcrypt, cache, db, migrate, jwt, cors
-
-from OnlineCV import commands, user
+from OnlineCV.extensions import (
+    bcrypt, cache, db, migrate, jwt, cors
+)
+from OnlineCV import commands, user, visitor
 from OnlineCV.user.views import user_blueprint
 from OnlineCV.visitor.views import visitor_blueprint
 from OnlineCV.templates.general.views import general_blueprint
@@ -29,9 +30,7 @@ def create_app(config_object=ProdConfig):
 def register_extensions(app, config_object):
     """Register Flask extensions."""
     bcrypt.init_app(app)
-    cache.init_app(app, config={
-        'CACHE_TYPE': config_object.CACHE_TYPE
-    })
+    cache.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
@@ -57,7 +56,8 @@ def register_shellcontext(app):
         """Shell context objects."""
         return {
             'db': db,
-            'User': user.models.User
+            'User': user.models.User,
+            'Visitor': visitor.models.Visitor
         }
 
     app.shell_context_processor(shell_context)
